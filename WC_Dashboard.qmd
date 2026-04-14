@@ -1,0 +1,25 @@
+---
+title: "Wildlife Crime Dashboard"
+author: "Alex Ley"
+format: html
+editor: visual
+embed-resources: true
+---
+
+```{r setup}
+#| message: false
+
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+library(dplyr)
+
+incidents <- read_csv("Data/incident-data-3653.csv")
+incidents <- incidents[, 1:16]
+incidents <- incidents |>
+  select(-"Primary Source", -"Source Type", -"Additional Sources", -"Method of Concealment", -"Name of Organisation Providing Information", -"Methods - Details")
+
+names(incidents)
+names(incidents) = c("ID", "incident_type", "country", "date", "subject", "transport_mode", "where_found", "detection", "outcome", "arrests")
+```
+

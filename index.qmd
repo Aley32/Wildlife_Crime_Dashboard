@@ -14,6 +14,8 @@ library(ggplot2)
 library(knitr)
 library(dplyr)
 
+setwd("/Users/alexley/Documents/STAT408/Semester Project")
+
 incidents <- read_csv("Data/incident-data-3653.csv")
 incidents <- incidents[, 1:16]
 incidents <- incidents |>

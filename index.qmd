@@ -21,7 +21,50 @@ incidents <- incidents[, 1:16]
 incidents <- incidents |>
   select(-"Primary Source", -"Source Type", -"Additional Sources", -"Method of Concealment", -"Name of Organisation Providing Information", -"Methods - Details")
 
-names(incidents)
 names(incidents) = c("ID", "incident_type", "country", "date", "subject", "transport_mode", "where_found", "detection", "outcome", "arrests")
 ```
+
+# Introduction
+
+# Results
+
+## Row {height=100%}
+```{r}
+counts = incidents |>
+  count(country, incident_type)
+
+#Incidents and Countries
+ggplot(incidents, aes(x = country, fill = incident_type)) +
+  geom_bar() +
+  coord_flip() +
+  labs(x = "Country", y = "Count",
+       title = "Wildlife Crime Incidents by Country and Type")
+```
+
+
+```{r, fig.width=13, fig.height=12}
+#All Countries
+ggplot(counts, aes(x = reorder(country, n), y = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(x = "Country", y = "Number of Incidents",
+       title = "Wildlife Crime Incidents by Country")
+```
+
+```{r}
+#Top 10 Countries
+counts2 = incidents |> count(country)
+top_counts = counts2 |>
+  slice_max(n, n = 10)   # top 10 countries
+
+ggplot(top_counts, aes(x = reorder(country, n), y = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip()
+```
+
+# Discussion
+
+# Data
+
+
 

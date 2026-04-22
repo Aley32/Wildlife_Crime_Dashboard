@@ -22,7 +22,7 @@ names(incidents) = c("ID", "incident_type", "country", "date", "subject", "trans
 incidents = incidents |>
   mutate(incident_type = str_remove(incident_type, "^[0-9]+\\.\\s*"))
 
-# Overview Page
+## Overview Page ##
 # Value boxes (summary stats)
 total_seizures <- format(nrow(incidents))
 total_arrests = sum(incidents$arrests, na.rm = TRUE)
@@ -81,7 +81,7 @@ ggplot(seizure_type, aes(x = "", y = n, fill = incident_type)) +
   ) +
   scale_fill_brewer(palette = "Spectral")
 
-# Global Patterns Page
+## Global Patterns Page ##
 
 # Map of Incidents by Country
 # Count number of seizures per country
@@ -150,7 +150,7 @@ ggplot(incidents_top50, aes(x = country, fill = incident_type)) +
   ) +
   scale_fill_brewer(palette = "Spectral")
 
-
+## Transport Methods and Arrests Page ##
 # Methods of Transport
 transport_methods = incidents |>
   mutate(transport_mode = ifelse(is.na(transport_mode),
@@ -168,7 +168,7 @@ ggplot(transport_methods, aes(x = reorder(transport_mode, num_transport), y = nu
 arrests_by_country = incidents |>
   group_by(country) |>
   summarise(total_arrests = sum(arrests, na.rm = TRUE)) |>
-  filter(total_arrests > 10)
+  filter(total_arrests > 100)
 
 ggplot(arrests_by_country, 
        aes(x = reorder(country, total_arrests), y = total_arrests)) +
@@ -176,6 +176,30 @@ ggplot(arrests_by_country,
   coord_flip() +
   labs(x = "Country", y = "Number of Arrests",
        title = "Total Arrests by Country")
+
+# Outcome of Arrests 
+arrest_outcome = incidents |>
+  mutate(
+    outcome = case_when(
+      outcome == "-" ~ "No details given",
+      str_detect(outcome, "Abscond") ~ "Absconded",
+      str_detect(outcome, "Charged - no further details") ~ "Charged - No further details",
+      str_detect(outcome, "Confiscation & arrest") ~ "Confiscation & Arrest",
+      str_detect(outcome, "Conviction - court fine or imprisonment") ~ "Conviction - court fine & imprisonment",
+      str_detect(outcome, "Conviction - Imprisonment") ~ "Conviction - imprisonment",
+      str_detect(outcome, "Conviction - suspension") ~ "Conviction",
+      str_detect(outcome, "Intelligence generated") ~ "Case discontinued",
+      str_detect(outcome, "Information compromised") ~ "Case discontinued",
+      TRUE ~ outcome
+    )
+  ) |>
+  count(outcome, name = "num_outcome")
+
+ggplot(arrest_outcome, aes(x = outcome, y = num_outcome))+
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(x = "Type of Outcome", y = "Count",
+       title = "Distribution of Different Arrest Outcomes")
 
 # Data Table
 incidents_clean <- incidents |>
@@ -194,4 +218,4 @@ incidents_clean <- incidents |>
 incidents_clean |>
   arrange(ID) |>
   head(500) |>
-  datatable()
+  datatable() 

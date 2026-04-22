@@ -3,8 +3,8 @@ title: "Wildlife Crime Dashboard"
 author: "Alex Ley"
 format: 
   dashboard:
-    theme: cosmo
-    orientation: rows
+    theme: journal
+    orientation: columns
 editor: visual
 embed-resources: true
 ---
@@ -36,45 +36,12 @@ incidents = incidents |>
 
 # Overview
 
-## Row {height=30%}
-### Column {width=60%}
+## Column {width=55%}
+### Row 
 
 The illegal wildlife trade (IWT) is considered to be one of the largest illegal markets in the world, drawing the attention of numerous organized crime groups (Martínez and Alonso, 2021). This market is estimated to be worth 7-23 billion USD per year (Nellemann et al., 2016). Countries around the world experience wildlife crime with many government agencies working to try to prevent it from occurring. Despite this effort, many species are still targeted for various parts, including rhino ivory, tiger bone marrow, bushmeat, and more. This project helps us visualize the number of wildlife trade incidents that are occuring, countries they are most common in, and arrests being made.
 
-### Column {width=20%}
-```{r}
-#| message: false
-# Value boxes (summary stats)
-total_seizures <- format(nrow(incidents))
-
-total_arrests = sum(incidents$arrests, na.rm = TRUE)
-```
-
-```{r}
-#| content: valuebox
-#| title: "Total Seizures"
-
-list(
-  icon = "exclamation-triangle",
-  color = "danger",
-  value = total_seizures
-)
-```
-
-### Column {width=20%}
-```{r}
-#| content: valuebox
-#| title: "Total Arrests"
-
-list(
-  icon = "person-badge",
-  color = "warning",
-  value = total_arrests
-)
-```
-
-## Row {height=70%}
-### Column {width=60%}
+### Row 
 ```{r}
 # Trends over time
 
@@ -98,7 +65,39 @@ ggplot(trends_year, aes(x = year, y = n)) +
   theme_minimal()
 ```
 
-### Column {width=40%}
+## Column {width=45%}
+### Row {height=35%}
+```{r}
+#| message: false
+# Value boxes (summary stats)
+total_seizures <- format(nrow(incidents))
+
+total_arrests = sum(incidents$arrests, na.rm = TRUE)
+```
+
+```{r}
+#| content: valuebox
+#| title: "Total Seizures"
+
+list(
+  icon = "exclamation-triangle",
+  color = "danger",
+  value = total_seizures
+)
+```
+
+```{r}
+#| content: valuebox
+#| title: "Total Arrests"
+
+list(
+  icon = "person-badge",
+  color = "warning",
+  value = total_arrests
+)
+```
+
+### Row {height=65%}
 ```{r}
 # Pie Chart Most common seizure type
 seizure_type = incidents |>
@@ -119,12 +118,32 @@ ggplot(seizure_type, aes(x = "", y = n, fill = incident_type)) +
 
 # Global Patterns
 
-## Row
-### Column 
-#### Left Side Dashboard
+## Column {width=55%}
+### Row {height=45%}
+
+**DATA SUMMARY**
+
+These figures depict the countries where most incidents occur and the distribution of the various types of incidents. Asian countries often hold the highest demand for illegal wildlife products and also homes a lot of high demand species. Most incident types are classified as a seizure and the second most common incident type is poaching / illegal harvesting.
+
+
 ```{r}
-#| fig-width: 12
-#| fig-height: 16
+#Top 10 Countries
+counts2 = incidents |> count(country)
+top_counts = counts2 |>
+  slice_max(n, n = 10)   # top 10 countries
+
+ggplot(top_counts, aes(x = reorder(country, n), y = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(
+    x = "Country", y = "Count",
+    title = "Wildlife Crime Incidents (Top 10 Countries)"
+  )
+```
+
+
+### Row {height=55%}
+```{r}
 # Map of Incidents by Country
 
 # Count number of seizures per country
@@ -163,23 +182,8 @@ ggplot(world_seizures) +
   )
 ```
 
-```{r}
-#Top 10 Countries
-counts2 = incidents |> count(country)
-top_counts = counts2 |>
-  slice_max(n, n = 10)   # top 10 countries
 
-ggplot(top_counts, aes(x = reorder(country, n), y = n)) +
-  geom_bar(stat = "identity") +
-  coord_flip() +
-  labs(
-    x = "Country", y = "Count",
-    title = "Wildlife Crime Incidents (Top 10 Countries)"
-  )
-```
-
-
-### Column 
+## Column {width=45%}
 ```{r}
 #| fig-width: 14
 #| fig-height: 18
@@ -206,6 +210,13 @@ ggplot(incidents_top50, aes(x = country, fill = incident_type)) +
 
 # Transport Methods and Arrests
 
+## Column
+### Row
+**DATA SUMMARY**
+
+Most incidents did not report the type of transport used for smuggling, however, the most common was a vehicle on land, air, or sea. The number of arrests is related to the number of incidents in each country, with India in the lead, and then a large decrease of arrests following. This figure portrays the importance of increasing law enforcement and limiting current corruption as arrests are relatively low compared to the number of seizures occuring. Many arrests lead to confiscation, imprisonment, or fines, all of which tend to be relatively inconsequential. 
+
+### Row
 ```{r}
 # Methods of Transport
 transport_methods = incidents |>
@@ -220,14 +231,15 @@ ggplot(transport_methods, aes(x = reorder(transport_mode, num_transport), y = nu
        title = "Type of Transport Used for Smuggling")
 ```
 
+## Column
+### Row
 ```{r}
 # Arrests per Country
 
 arrests_by_country = incidents |>
   group_by(country) |>
   summarise(total_arrests = sum(arrests, na.rm = TRUE)) |>
-  filter(total_arrests > 10)
-
+  filter(total_arrests > 100)
 
 ggplot(arrests_by_country, 
        aes(x = reorder(country, total_arrests), y = total_arrests)) +
@@ -237,9 +249,38 @@ ggplot(arrests_by_country,
        title = "Total Arrests by Country")
 ```
 
+### Row
+```{r}
+# Outcome of Arrests 
+
+arrest_outcome = incidents |>
+  mutate(
+    outcome = case_when(
+      outcome == "-" ~ "No details given",
+      str_detect(outcome, "Abscond") ~ "Absconded",
+      str_detect(outcome, "Charged - no further details") ~ "Charged - No further details",
+      str_detect(outcome, "Confiscation & arrest") ~ "Confiscation & Arrest",
+      str_detect(outcome, "Conviction - court fine or imprisonment") ~ "Conviction - court fine & imprisonment",
+      str_detect(outcome, "Conviction - Imprisonment") ~ "Conviction - imprisonment",
+      str_detect(outcome, "Conviction - suspension") ~ "Conviction",
+      str_detect(outcome, "Intelligence generated") ~ "Case discontinued",
+      str_detect(outcome, "Information compromised") ~ "Case discontinued",
+      TRUE ~ outcome
+    )
+  ) |>
+  count(outcome, name = "num_outcome")
+
+ggplot(arrest_outcome, aes(x = outcome, y = num_outcome))+
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(x = "Type of Outcome", y = "Count",
+       title = "Distribution of Different Arrest Outcomes")
+```
+
 
 # Data
 
+## Row
 Data is derived from Wildlife Trade Portal and covers the years 2015-2025. This table only shows the first 500 out of 20,587 entries.
 
 ```{r}

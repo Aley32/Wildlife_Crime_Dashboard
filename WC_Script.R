@@ -47,6 +47,8 @@ list(
 )
 
 # Trends over time
+#| title: Wildlife Crime Trends Over Time
+
 incidents <- incidents |>
   mutate(date = as.Date(date))
 
@@ -61,12 +63,13 @@ ggplot(trends_year, aes(x = year, y = n)) +
   scale_x_continuous(breaks = unique(trends_year$year)) +
   labs(
     x = "Year",
-    y = "Number of Seizures",
-    title = "Wildlife Crime Seizure Trends Over Time"
+    y = "Number of Seizures"
   ) +
   theme_minimal()
 
 # Pie Chart of most common seizure type
+#| title: Most Common Incident Types
+
 seizure_type = incidents |>
   count(incident_type, name = "n") |>
   arrange(desc(n))
@@ -75,15 +78,37 @@ ggplot(seizure_type, aes(x = "", y = n, fill = incident_type)) +
   geom_col(width = 1) +
   coord_polar("y") +
   theme_void() +
-  labs(
-    title = "Distribution of Seizure Types",
-    fill = "Incident Type"
-  ) +
-  scale_fill_brewer(palette = "Spectral")
+  scale_fill_manual(values = c(
+    "#1F78B4",
+    "#FF7F00",
+    "#B2DF8A",
+    "red3",
+    "#33A02C",
+    "#A6CEE3",
+    "#FDBF6F",
+    "#FB9A99",
+    "#CAB2D6"
+  ))
+
 
 ## Global Patterns Page ##
+# Top 10 Countries
+#| title: Wildlife Crime Incidents (Top 10 Countries)
+
+counts2 = incidents |> count(country)
+top_counts = counts2 |>
+  slice_max(n, n = 10)   # top 10 countries
+
+ggplot(top_counts, aes(x = reorder(country, n), y = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(
+    x = "Country", y = "Count"
+  )
 
 # Map of Incidents by Country
+#| title: Wildlife Crime Incidents by Country
+
 # Count number of seizures per country
 seizures_country = incidents |>
   count(country, name = "num_seizures")
@@ -105,10 +130,9 @@ ggplot(world_seizures) +
     low = "lightyellow", 
     high = "darkred", 
     name = "Seizures"
-  ) +
+  )+
+  coord_sf(expand = FALSE) +
   labs(
-    title = "Wildlife Crime Seizures by Country",
-    subtitle = "Number of recorded incidents",
     caption = "Source: Wildlife Trade Portal"
   ) +
   theme_minimal() +
@@ -118,21 +142,11 @@ ggplot(world_seizures) +
     axis.title = element_blank()
   )
 
-#Top 10 Countries
-counts2 = incidents |> count(country)
-top_counts = counts2 |>
-  slice_max(n, n = 10)   # top 10 countries
-
-ggplot(top_counts, aes(x = reorder(country, n), y = n)) +
-  geom_bar(stat = "identity") +
-  coord_flip() +
-  labs(
-    x = "Country",
-    y = "Count",
-    title = "Wildlife Crime Incidents (Top 10 Countries)"
-  )
-
 # Top 50 Countries by Incident Type
+#| fig-width: 14
+#| fig-height: 18
+#| title: Type of Incident by Country (Top 50)
+
 top50 = incidents |>
   count(country, sort = TRUE) |>
   slice_head(n = 50)
@@ -146,12 +160,24 @@ ggplot(incidents_top50, aes(x = country, fill = incident_type)) +
   labs(
     x = "Country",
     y = "Count",
-    title = "Type of Incident by Country"
   ) +
-  scale_fill_brewer(palette = "Spectral")
+  scale_fill_manual(values = c(
+    "#1F78B4",
+    "#FF7F00",
+    "#B2DF8A",
+    "red3",
+    "#33A02C",
+    "#A6CEE3",
+    "#FDBF6F",
+    "#FB9A99",
+    "#CAB2D6"
+  ))
+
 
 ## Transport Methods and Arrests Page ##
 # Methods of Transport
+#| title: Type of Transport Used for Smuggling
+
 transport_methods = incidents |>
   mutate(transport_mode = ifelse(is.na(transport_mode),
                                  "Unknown",
@@ -160,11 +186,12 @@ transport_methods = incidents |>
 
 ggplot(transport_methods, aes(x = reorder(transport_mode, num_transport), y = num_transport)) +
   geom_bar(stat = "identity") +
-  labs(x = "Type of Transport", y = "Count",
-       title = "Type of Transport Used for Smuggling")
+  labs(x = "Type of Transport", y = "Count")
 
 
 # Arrests per Country
+#| title: Total Arrests by Country
+
 arrests_by_country = incidents |>
   group_by(country) |>
   summarise(total_arrests = sum(arrests, na.rm = TRUE)) |>
@@ -174,10 +201,11 @@ ggplot(arrests_by_country,
        aes(x = reorder(country, total_arrests), y = total_arrests)) +
   geom_bar(stat = "identity") +
   coord_flip() +
-  labs(x = "Country", y = "Number of Arrests",
-       title = "Total Arrests by Country")
+  labs(x = "Country", y = "Number of Arrests")
 
-# Outcome of Arrests 
+# Arrest Outcomes 
+
+#| title: Distribution of Arrest Outcomes
 arrest_outcome = incidents |>
   mutate(
     outcome = case_when(
@@ -198,8 +226,7 @@ arrest_outcome = incidents |>
 ggplot(arrest_outcome, aes(x = outcome, y = num_outcome))+
   geom_bar(stat = "identity") +
   coord_flip() +
-  labs(x = "Type of Outcome", y = "Count",
-       title = "Distribution of Different Arrest Outcomes")
+  labs(x = "Type of Outcome", y = "Count")
 
 # Data Table
 incidents_clean <- incidents |>
@@ -215,7 +242,8 @@ incidents_clean <- incidents |>
     Outcome = outcome,
     Arrests = arrests
   )
+
 incidents_clean |>
   arrange(ID) |>
   head(500) |>
-  datatable() 
+  datatable()

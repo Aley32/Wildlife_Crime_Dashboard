@@ -39,7 +39,7 @@ incidents = incidents |>
 ## Column {width=55%}
 ### Row 
 
-The illegal wildlife trade (IWT) is considered to be one of the largest illegal markets in the world, drawing the attention of numerous organized crime groups (Martínez and Alonso, 2021). This market is estimated to be worth 7-23 billion USD per year (Nellemann et al., 2016). Countries around the world experience wildlife crime with many government agencies working to try to prevent it from occurring. Despite this effort, many species are still targeted for various parts, including rhino ivory, tiger bone marrow, bushmeat, and more. This project helps us visualize the number of wildlife trade incidents that are occuring, countries they are most common in, and arrests being made.
+The illegal wildlife trade (IWT) is considered to be one of the largest illegal markets in the world, drawing the attention of numerous organized crime groups (Martínez and Alonso, 2021). This market is estimated to be worth 7-23 billion USD per year (Nellemann et al., 2016). Countries around the world experience wildlife crime with many government agencies working to try to prevent it from occurring. Despite this effort, many species are still targeted for various parts, including rhino ivory, tiger bone marrow, bushmeat, and more. This project helps visualize the number of wildlife trade incidents that are occurring, countries they are most common in, and arrests being made.
 
 ### Row 
 ```{r}
@@ -123,7 +123,7 @@ ggplot(seizure_type, aes(x = "", y = n, fill = incident_type)) +
 
 **DATA SUMMARY**
 
-These figures depict the countries where most incidents occur and the distribution of the various types of incidents. Asian countries often hold the highest demand for illegal wildlife products and also homes a lot of high demand species. Most incident types are classified as a seizure and the second most common incident type is poaching / illegal harvesting.
+These figures depict the countries where most incidents occur and the distribution of the various types of incidents. China and India have the highest demand for illegal wildlife products and also homes a lot of high demand species. Most incident types are classified as a seizure and the second most common incident type is poaching / illegal harvesting.
 
 
 ```{r}
@@ -214,7 +214,7 @@ ggplot(incidents_top50, aes(x = country, fill = incident_type)) +
 ### Row
 **DATA SUMMARY**
 
-Most incidents did not report the type of transport used for smuggling, however, the most common was a vehicle on land, air, or sea. The number of arrests is related to the number of incidents in each country, with India in the lead, and then a large decrease of arrests following. This figure portrays the importance of increasing law enforcement and limiting current corruption as arrests are relatively low compared to the number of seizures occuring. Many arrests lead to confiscation, imprisonment, or fines, all of which tend to be relatively inconsequential. 
+Most incidents did not report the type of transport used for smuggling, however, the most common was some kind of vehicle. The number of arrests is related to the number of incidents in each country, with India in the lead, and then a large decrease of arrests following. This figure portrays the importance of increasing law enforcement and limiting current corruption as arrests are relatively low compared to the number of seizures occuring. Many arrests lead to confiscation, imprisonment, or fines, all of which tend to be relatively inconsequential. 
 
 ### Row
 ```{r}

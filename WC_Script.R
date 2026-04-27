@@ -127,8 +127,8 @@ world_seizures$num_seizures[is.na(world_seizures$num_seizures)] = 0
 ggplot(world_seizures) +
   geom_sf(aes(fill = num_seizures), color = "gray70", size = 0.1) +
   scale_fill_gradient( 
-    low = "lightyellow", 
-    high = "darkred", 
+    low = "white", 
+    high = "darkgreen", 
     name = "Seizures"
   )+
   coord_sf(expand = FALSE) +
@@ -143,7 +143,7 @@ ggplot(world_seizures) +
   )
 
 # Top 50 Countries by Incident Type
-#| fig-width: 14
+#| fig-width: 20
 #| fig-height: 18
 #| title: Type of Incident by Country (Top 50)
 
@@ -171,7 +171,11 @@ ggplot(incidents_top50, aes(x = country, fill = incident_type)) +
     "#FDBF6F",
     "#FB9A99",
     "#CAB2D6"
-  ))
+  )) + theme(
+    legend.text = element_text(size = 13),
+    legend.title = element_text(size = 15),
+    legend.key.size = grid::unit(0.8, "cm")
+  )
 
 
 ## Transport Methods and Arrests Page ##

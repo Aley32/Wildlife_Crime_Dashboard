@@ -112,15 +112,15 @@ ggplot(seizure_type, aes(x = "", y = n, fill = incident_type)) +
   theme_void() +
   labs(fill = "Incident Type") +
   scale_fill_manual(values = c(
-  "#1F78B4",
-  "#FF7F00",
-  "#B2DF8A",
-  "red3",
-  "#33A02C",
-  "#A6CEE3",
-  "#FDBF6F",
-  "#FB9A99",
-  "#CAB2D6"
+    "#1F78B4",
+    "#FF7F00",
+    "#B2DF8A",
+    "red3",
+    "#33A02C",
+    "#A6CEE3",
+    "#FDBF6F",
+    "#FB9A99",
+    "#CAB2D6"
 ))
 ```
 
@@ -128,11 +128,11 @@ ggplot(seizure_type, aes(x = "", y = n, fill = incident_type)) +
 # Global Patterns
 
 ## Column {width=55%}
-### Row {height=45%}
+### Row {height=40%}
 
 **DATA SUMMARY**
 
-These figures depict the countries where most incidents occur and the distribution of the various types of incidents. China and India have the highest demand for illegal wildlife products and also homes a lot of high demand species. Most incident types are classified as a seizure and the second most common incident type is poaching / illegal harvesting.
+These figures depict the countries where most incidents occur and the distribution of the different types of incidents. China and India have the highest demand for illegal wildlife products and are also home to a lot of high demand species. Most incident types are classified as a seizure and the second most common incident type is poaching / illegal harvesting.
 
 
 ```{r}
@@ -151,7 +151,7 @@ ggplot(top_counts, aes(x = reorder(country, n), y = n)) +
 ```
 
 
-### Row {height=55%}
+### Row {height=60%}
 ```{r}
 #| title: Wildlife Crime Incidents by Country
 
@@ -174,8 +174,8 @@ world_seizures$num_seizures[is.na(world_seizures$num_seizures)] = 0
 ggplot(world_seizures) +
   geom_sf(aes(fill = num_seizures), color = "gray70", size = 0.1) +
   scale_fill_gradient( 
-    low = "lightyellow", 
-    high = "darkred", 
+    low = "white", 
+    high = "darkgreen", 
     name = "Seizures"
   )+
   coord_sf(expand = FALSE) +
@@ -212,15 +212,15 @@ ggplot(incidents_top50, aes(x = country, fill = incident_type)) +
     y = "Count",
   ) +
   scale_fill_manual(values = c(
-  "#1F78B4",
-  "#FF7F00",
-  "#B2DF8A",
-  "red3",
-  "#33A02C",
-  "#A6CEE3",
-  "#FDBF6F",
-  "#FB9A99",
-  "#CAB2D6"
+    "#1F78B4",
+    "#FF7F00",
+    "#B2DF8A",
+    "red3",
+    "#33A02C",
+    "#A6CEE3",
+    "#FDBF6F",
+    "#FB9A99",
+    "#CAB2D6"
 )) + theme(
     legend.text = element_text(size = 13),
     legend.title = element_text(size = 15),
@@ -236,7 +236,7 @@ ggplot(incidents_top50, aes(x = country, fill = incident_type)) +
 ### Row
 **DATA SUMMARY**
 
-Most incidents did not report the type of transport used for smuggling, however, the most common was some kind of vehicle. The number of arrests is related to the number of incidents in each country, with India in the lead, and then a large decrease of arrests following. This figure portrays the importance of increasing law enforcement and limiting current corruption as arrests are relatively low compared to the number of seizures occuring. Many arrests lead to confiscation, imprisonment, or fines, all of which tend to be relatively inconsequential. 
+Most incidents did not report the type of transport used for smuggling, however, the most common was some kind of vehicle. The number of arrests correlates with number of incidents in each country, with India in the lead, followed by a large decrease in arrests. This figure portrays the importance of increasing law enforcement and limiting current corruption as arrests are relatively low compared to the number of seizures occurring. Many arrests lead to confiscation, imprisonment, or fines, all of which tend to be relatively inconsequential to those committing the crimes.
 
 ### Row
 ```{r}
